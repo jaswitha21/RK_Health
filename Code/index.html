@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RK Health – AI Smart Patient Appointment & Medication Reminder System</title>
+  
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Chart.js for beautiful charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <i class="fa-solid fa-heart-pulse"></i>
+        <span>RK Health</span>
+      </div>
+      <ul class="sidebar-menu">
+        <li>
+          <a class="menu-item active" data-section="dashboard">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a class="menu-item" data-section="appointments">
+            <i class="fa-solid fa-calendar-check"></i>
+            <span>Appointments</span>
+          </a>
+        </li>
+        <li>
+          <a class="menu-item" data-section="medications">
+            <i class="fa-solid fa-pills"></i>
+            <span>Medications</span>
+          </a>
+        </li>
+        <li>
+          <a class="menu-item" data-section="ai-summaries">
+            <i class="fa-solid fa-microchip"></i>
+            <span>AI Summaries</span>
+          </a>
+        </li>
+        <li>
+          <a class="menu-item" data-section="health-logs">
+            <i class="fa-solid fa-file-medical"></i>
+            <span>Health Logs</span>
+          </a>
+        </li>
+        <li>
+          <a class="menu-item" data-section="reports">
+            <i class="fa-solid fa-print"></i>
+            <span>Health Reports</span>
+          </a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <p>&copy; 2026 RK Health</p>
+        <p>AI Clinical Portal</p>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Top Header -->
+      <header>
+        <div class="header-title-area">
+          <h1 id="header-page-title">Dashboard</h1>
+          <p>Centralized Clinical Management Console</p>
+        </div>
+        
+        <div class="header-controls">
+          <!-- Active Mode Indicator Badge -->
+          <div id="mode-badge" class="mode-badge">
+            <i class="fa-solid fa-cloud-bolt"></i>
+            <span id="mode-badge-text">Mock Database Mode</span>
+          </div>
+
+          <!-- Active Patient Filter Selector -->
+          <div class="patient-selector-wrapper">
+            <i class="fa-solid fa-user-injured" style="color: var(--primary);"></i>
+            <label for="global-patient-select" class="form-label" style="margin:0;">Active Patient:</label>
+            <select id="global-patient-select" class="patient-select">
+              <option value="Apex Miller">Apex Miller</option>
+              <option value="All Patients">All Patients</option>
+            </select>
+          </div>
+
+          <!-- User Profile Display -->
+          <div class="user-profile">
+            <div class="user-avatar" id="avatar-letters">AM</div>
+            <div class="user-info">
+              <span class="user-name" id="user-display-name">Apex Miller</span>
+              <span class="user-role">Patient Portal</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content Sections -->
+      <div class="content-body">
+        
+        <!-- SECTION 1: DASHBOARD -->
+        <section id="dashboard-section" class="page-section active">
+          <!-- Stats Grid -->
+          <div class="stats-grid">
+            <div class="stat-card primary">
+              <div class="stat-header">
+                <span class="stat-title">Appointments</span>
+                <div class="stat-icon"><i class="fa-solid fa-calendar-check"></i></div>
+              </div>
+              <div class="stat-value" id="stat-total-appointments">0</div>
+              <div class="stat-desc">Total scheduled consultations</div>
+            </div>
+            
+            <div class="stat-card secondary">
+              <div class="stat-header">
+                <span class="stat-title">Upcoming</span>
+                <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+              </div>
+              <div class="stat-value" id="stat-upcoming-appointments">0</div>
+              <div class="stat-desc">Next 14 days schedule</div>
+            </div>
+            
+            <div class="stat-card accent">
+              <div class="stat-header">
+                <span class="stat-title">Active Medications</span>
+                <div class="stat-icon"><i class="fa-solid fa-prescription-bottle-medical"></i></div>
+              </div>
+              <div class="stat-value" id="stat-active-medications">0</div>
+              <div class="stat-desc">Current medication schedules</div>
+            </div>
+            
+            <div class="stat-card warning">
+              <div class="stat-header">
+                <span class="stat-title">AI Summaries</span>
+                <div class="stat-icon"><i class="fa-solid fa-robot"></i></div>
+              </div>
+              <div class="stat-value" id="stat-ai-summaries">0</div>
+              <div class="stat-desc">Generated medical summaries</div>
+            </div>
+          </div>
+
+          <!-- Dashboard Charts & Detail Grid -->
+          <div class="dashboard-details-grid">
+            
+            <!-- Left Side: Interactive Chart & Upcoming Table -->
+            <div class="details-left">
+              <div class="card">
+                <div class="card-title-area">
+                  <div class="card-title"><i class="fa-solid fa-chart-area"></i> Appointment Schedules & Distribution</div>
+                </div>
+                <div style="position: relative; height: 260px;">
+                  <canvas id="dashboardChart"></canvas>
+                </div>
+              </div>
+              
+              <div class="card">
+                <div class="card-title-area">
+                  <div class="card-title"><i class="fa-solid fa-clipboard-list"></i> Next Scheduled Appointments</div>
+                  <button class="btn btn-secondary btn-icon" id="quick-add-appt-btn" title="Add Appointment">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+                <div class="table-responsive">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Doctor</th>
+                        <th>Hospital</th>
+                        <th>Date / Time</th>
+                        <th>Notes</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashboard-appointments-tbody">
+                      <!-- Rendered Dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side: Compliance Score & Live Log Feed -->
+            <div class="details-right">
+              <div class="card">
+                <div class="card-title-area">
+                  <div class="card-title"><i class="fa-solid fa-gauge-high"></i> Adherence Score</div>
+                </div>
+                <div class="compliance-wrapper">
+                  <div class="compliance-gauge" id="compliance-gauge-dial" style="--percent: 85;">
+                    <div class="compliance-value" id="compliance-percentage-text">85%</div>
+                  </div>
+                  <div class="compliance-desc">
+                    Ratio of active & completed medications. Keep this score above 80% to ensure treatment compliance.
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-title-area">
+                  <div class="card-title"><i class="fa-solid fa-bullhorn"></i> SMS Reminder Gateway Logs</div>
+                </div>
+                <div class="activity-feed" id="dashboard-sms-logs-feed">
+                  <!-- Logs dynamic rendering -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- SECTION 2: APPOINTMENTS -->
+        <section id="appointments-section" class="page-section">
+          <div class="action-bar">
+            <div class="search-filter-wrapper">
+              <div class="search-input-group">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="appt-search-input" class="form-input" placeholder="Search appointments...">
+              </div>
+              <input type="date" id="appt-date-filter" class="form-input">
+              <button class="btn btn-secondary" id="clear-appt-filters-btn">Clear Filter</button>
+            </div>
+            <button class="btn btn-primary" id="open-add-appt-modal-btn">
+              <i class="fa-solid fa-plus"></i> Schedule Appointment
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Patient Name</th>
+                    <th>Doctor Name</th>
+                    <th>Appointment Title</th>
+                    <th>Hospital/Clinic</th>
+                    <th>Date & Time</th>
+                    <th>Contact Phone</th>
+                    <th>Google Calendar</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="appointments-list-tbody">
+                  <!-- Loaded via script.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: MEDICATIONS -->
+        <section id="medications-section" class="page-section">
+          <div class="action-bar">
+            <div class="search-filter-wrapper">
+              <div class="search-input-group">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="meds-search-input" class="form-input" placeholder="Search medications...">
+              </div>
+              <select id="meds-status-filter" class="filter-select">
+                <option value="All">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Completed">Completed</option>
+                <option value="Paused">Paused</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" id="open-add-med-modal-btn">
+              <i class="fa-solid fa-plus"></i> Add Medication
+            </button>
+          </div>
+
+          <div class="medication-grid" id="medications-cards-grid">
+            <!-- Loaded dynamically as cards -->
+          </div>
+        </section>
+
+        <!-- SECTION 4: AI SUMMARIES -->
+        <section id="ai-summaries-section" class="page-section">
+          <div class="ai-workspace">
+            <!-- Input Form Card -->
+            <div class="card">
+              <div class="card-title-area">
+                <div class="card-title"><i class="fa-solid fa-brain"></i> AI Summary Generator</div>
+              </div>
+              <form id="ai-generator-form">
+                <div class="form-grid">
+                  <div class="form-group form-group-full">
+                    <label class="form-label" for="ai-patient-name">Patient Name</label>
+                    <input type="text" id="ai-patient-name" class="form-input" placeholder="Patient's Name" readonly>
+                  </div>
+                  <div class="form-group form-group-full">
+                    <label class="form-label" for="ai-appt-notes">Patient Symptoms & Appointment Notes</label>
+                    <textarea id="ai-appt-notes" class="form-input" placeholder="Describe symptoms, primary health concern, or checkup reason..."></textarea>
+                  </div>
+                  <div class="form-group form-group-full">
+                    <label class="form-label" for="ai-doctor-notes">Doctor Clinical Assessment & Notes</label>
+                    <textarea id="ai-doctor-notes" class="form-input" placeholder="Paste the official physician notes, diagnosis, or measurements (e.g. BP: 120/80)..."></textarea>
+                  </div>
+                  <div class="form-group form-group-full">
+                    <label class="form-label" for="ai-meds-notes">Medication & Dosage Prescription List</label>
+                    <textarea id="ai-meds-notes" class="form-input" placeholder="Specify medications, dosage levels, frequencies, and administration guidelines..."></textarea>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i> Compile & Generate Patient Summary
+                </button>
+              </form>
+            </div>
+
+            <!-- Output Display Card -->
+            <div class="ai-output-container">
+              <div class="ai-output-header">
+                <i class="fa-solid fa-robot"></i> Generated Clinical Smart Report
+              </div>
+              
+              <!-- Loader spinner overlay -->
+              <div class="ai-loader" id="ai-summary-loader">
+                <div class="spinner"></div>
+                <p style="font-weight:600; color:var(--text-main);">Groq AI analyzing health context...</p>
+                <p style="font-size:12px; color:var(--text-muted);">Parsing doctor notes and formatting clinical overview</p>
+              </div>
+              
+              <div class="ai-output-body" id="ai-summary-output-body">
+                <div class="ai-placeholder">
+                  <i class="fa-solid fa-file-invoice-dollar"></i>
+                  <p style="font-weight:600;">No AI Summary Loaded</p>
+                  <p style="font-size: 13px;">Fill out the clinical notes form and press generate to request a clean, patient-friendly summary powered by llama-3.3-70b-versatile.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 5: HEALTH LOGS -->
+        <section id="health-logs-section" class="page-section">
+          <div class="action-bar">
+            <div class="search-filter-wrapper">
+              <div class="search-input-group">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="logs-search-input" class="form-input" placeholder="Search auditing logs...">
+              </div>
+              <select id="logs-type-filter" class="filter-select">
+                <option value="All">All Operations</option>
+                <option value="Appointments">Appointments Sheet</option>
+                <option value="Medications">Medications Sheet</option>
+                <option value="Summaries">AI Summaries</option>
+                <option value="SMS">Reminder Logs</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Log ID</th>
+                    <th>Source Sheet</th>
+                    <th>Event / Message Action</th>
+                    <th>Execution Status</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody id="logs-list-tbody">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 6: HEALTH REPORTS -->
+        <section id="reports-section" class="page-section">
+          <div class="action-bar">
+            <div class="search-filter-wrapper">
+              <span style="font-weight:600;">Select Patient Report Profile:</span>
+              <select id="report-patient-select" class="filter-select">
+                <!-- Loaded dynamically -->
+              </select>
+              <button class="btn btn-secondary" id="compile-report-btn">
+                <i class="fa-solid fa-rotate"></i> Compile Snapshot
+              </button>
+            </div>
+            <button class="btn btn-primary" onclick="window.print()">
+              <i class="fa-solid fa-file-pdf"></i> Export / Print Document
+            </button>
+          </div>
+
+          <!-- Printable medical report sheet layout -->
+          <div class="report-sheet" id="report-document-printout">
+            <div class="report-header">
+              <div class="report-logo">
+                <h2>RK HEALTH SYSTEM</h2>
+                <p>Digital Health Summary & Compliance Record</p>
+              </div>
+              <div style="text-align: right; font-size:12px; color:var(--text-muted);">
+                <p>Report Reference: <strong id="report-ref-id">#N/A</strong></p>
+                <p>Compiled Date: <strong id="report-compiled-date">July 6, 2026</strong></p>
+              </div>
+            </div>
+
+            <!-- Patient Meta -->
+            <div class="report-meta-grid">
+              <div class="report-meta-item">
+                <span class="label">Patient Name:</span>
+                <span id="report-patient-name">Apex Miller</span>
+              </div>
+              <div class="report-meta-item">
+                <span class="label">Portal Contact:</span>
+                <span id="report-patient-phone">+1 555-0199</span>
+              </div>
+              <div class="report-meta-item">
+                <span class="label">Compliance Indicators:</span>
+                <span id="report-patient-compliance" style="color:var(--accent); font-weight:700;">85%</span>
+              </div>
+              <div class="report-meta-item">
+                <span class="label">Database Gateway:</span>
+                <span id="report-db-status">Active Sync</span>
+              </div>
+            </div>
+
+            <!-- AI Summary Block -->
+            <h3 class="report-section-title">Latest AI Health Narrative</h3>
+            <div class="report-summary-block" id="report-ai-summary-block">
+              No AI summary compiled for this patient yet. Go to the "AI Summaries" workspace tab to compile notes.
+            </div>
+
+            <!-- Medications List -->
+            <h3 class="report-section-title">Medication Schedules & Prescriptions</h3>
+            <div class="table-responsive">
+              <table class="data-table" style="font-size: 12px;">
+                <thead>
+                  <tr>
+                    <th>Medicine</th>
+                    <th>Dosage</th>
+                    <th>Frequency</th>
+                    <th>Timings</th>
+                    <th>Directions</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="report-meds-tbody">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Recent Appointments -->
+            <h3 class="report-section-title">Recent Consultations & Appointment Logs</h3>
+            <div class="table-responsive">
+              <table class="data-table" style="font-size: 12px;">
+                <thead>
+                  <tr>
+                    <th>Date / Time</th>
+                    <th>Doctor</th>
+                    <th>Hospital / Clinic</th>
+                    <th>Checkup Reason</th>
+                  </tr>
+                </thead>
+                <tbody id="report-appts-tbody">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: 40px; border-top:1px dashed var(--border-color); padding-top:20px; font-size:10px; color:var(--text-light); text-align:center;">
+              Disclaimer: This report compiles data recorded within the patient portal. Please verify clinical metrics and prescriptions directly with primary practitioners.
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: ADD/EDIT APPOINTMENT -->
+  <div class="modal-overlay" id="appointment-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="appt-modal-title">Schedule Appointment</h3>
+        <button class="modal-close" id="appt-modal-close-btn">&times;</button>
+      </div>
+      <form id="appt-form">
+        <div class="modal-body">
+          <input type="hidden" id="appt-field-id">
+          <div class="form-grid">
+            <div class="form-group form-group-full">
+              <label class="form-label" for="appt-field-patient">Patient Name <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="appt-field-patient" class="form-input" placeholder="e.g. Apex Miller" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="appt-field-doctor">Doctor Name <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="appt-field-doctor" class="form-input" placeholder="e.g. Dr. Clara Mercer" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="appt-field-title">Appointment Title <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="appt-field-title" class="form-input" placeholder="e.g. Cardiology Checkup" required>
+            </div>
+            <div class="form-group form-group-full">
+              <label class="form-label" for="appt-field-hospital">Hospital / Clinic Name</label>
+              <input type="text" id="appt-field-hospital" class="form-input" placeholder="e.g. St. Jude Heart Hospital">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="appt-field-date">Date <span style="color:var(--danger)">*</span></label>
+              <input type="date" id="appt-field-date" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="appt-field-time">Time <span style="color:var(--danger)">*</span></label>
+              <input type="time" id="appt-field-time" class="form-input" required>
+            </div>
+            <div class="form-group form-group-full">
+              <label class="form-label" for="appt-field-phone">Contact Number (E.164 SMS format)</label>
+              <input type="tel" id="appt-field-phone" class="form-input" placeholder="e.g. +15550199">
+            </div>
+            <div class="form-group form-group-full">
+              <label class="form-label" for="appt-field-notes">Notes / Symptoms</label>
+              <textarea id="appt-field-notes" class="form-input" placeholder="Describe symptoms or reasons for visit..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="appt-modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="appt-modal-submit-btn">Save Schedule</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD/EDIT MEDICATED -->
+  <div class="modal-overlay" id="medication-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="med-modal-title">Prescribe Medication</h3>
+        <button class="modal-close" id="med-modal-close-btn">&times;</button>
+      </div>
+      <form id="med-form">
+        <div class="modal-body">
+          <input type="hidden" id="med-field-id">
+          <div class="form-grid">
+            <div class="form-group form-group-full">
+              <label class="form-label" for="med-field-patient">Patient Name <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="med-field-patient" class="form-input" placeholder="e.g. Apex Miller" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="med-field-name">Medicine Name <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="med-field-name" class="form-input" placeholder="e.g. Lisinopril" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="med-field-dosage">Dosage <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="med-field-dosage" class="form-input" placeholder="e.g. 10mg, 1 tablet" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="med-field-frequency">Frequency <span style="color:var(--danger)">*</span></label>
+              <select id="med-field-frequency" class="form-input" required>
+                <option value="Daily">Daily</option>
+                <option value="Twice Daily">Twice Daily</option>
+                <option value="Three times daily">Three times daily</option>
+                <option value="Weekly">Weekly</option>
+                <option value="As needed">As needed</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="med-field-timing">Timings <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="med-field-timing" class="form-input" placeholder="e.g. 08:00 AM, 09:00 PM" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="med-field-start">Start Date <span style="color:var(--danger)">*</span></label>
+              <input type="date" id="med-field-start" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="med-field-end">End Date <span style="color:var(--danger)">*</span></label>
+              <input type="date" id="med-field-end" class="form-input" required>
+            </div>
+            <div class="form-group form-group-full">
+              <label class="form-label" for="med-field-phone">Contact Number (SMS Notifications)</label>
+              <input type="tel" id="med-field-phone" class="form-input" placeholder="e.g. +15550199">
+            </div>
+            <div class="form-group form-group-full">
+              <label class="form-label" for="med-field-status">Treatment Status</label>
+              <select id="med-field-status" class="form-input">
+                <option value="Active">Active</option>
+                <option value="Paused">Paused</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+            <div class="form-group form-group-full">
+              <label class="form-label" for="med-field-instructions">Instructions</label>
+              <textarea id="med-field-instructions" class="form-input" placeholder="e.g. Take with food. Do not chew."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="med-modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="med-modal-submit-btn">Save Prescription</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toast-wrapper"></div>
+
+  <!-- Configuration & Main script.js -->
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
